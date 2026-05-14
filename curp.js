@@ -1,9 +1,3 @@
-/* ──────────────────────────────────────────
-   ICATEBCS – Consulta de CURP (Modo Local)
-   curp.js — Lee de docentes.json localmente
-   Sin consumo de API externa
-────────────────────────────────────────── */
-
 const input  = document.getElementById('curpInput');
 const btn    = document.getElementById('btnBuscar');
 const state  = document.getElementById('stateArea');
@@ -23,7 +17,7 @@ input.addEventListener('keydown', e => {
 
 /* ── Usar CURP de ejemplo (Claudia Sheinbaum) ── */
 function usarEjemplo() {
-  input.value = 'SHEPC620624MDFRRD09';
+  input.value = 'PAOR691209HDFZRL04';
   consultarCURP();
 }
 
