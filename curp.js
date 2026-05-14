@@ -1,37 +1,209 @@
-const input  = document.getElementById('curpInput');
-const btn    = document.getElementById('btnBuscar');
-const state  = document.getElementById('stateArea');
-const result = document.getElementById('resultArea');
+/* ── Referencias DOM ── */
+const input       = document.getElementById('curpInput');
+const btn         = document.getElementById('btnBuscar');
+const state       = document.getElementById('stateArea');
+const result      = document.getElementById('resultArea');
+const nombreInput = document.getElementById('nombreInput');
+const sugerencias = document.getElementById('sugerencias');
 
-/* ── Auto-mayúsculas al escribir ── */
+/* ── Estado del dropdown ── */
+let listaDocentes    = [];   // se llena al cargar el JSON
+let highlightedIndex = -1;   // ítem activo con teclado
+
+/* ── Cargar JSON al iniciar ── */
+async function cargarDocentes() {
+  try {
+    const res = await fetch('docentes.json');
+    listaDocentes = await res.json();
+  } catch {
+    // Si falla, la búsqueda por nombre mostrará error al usarse
+  }
+}
+cargarDocentes();
+
+/* ════════════════════════════════
+   TABS
+════════════════════════════════ */
+function switchTab(tab) {
+  document.getElementById('panelCurp').style.display   = tab === 'curp'   ? 'block' : 'none';
+  document.getElementById('panelNombre').style.display = tab === 'nombre' ? 'block' : 'none';
+  document.getElementById('tabCurp').classList.toggle('active',   tab === 'curp');
+  document.getElementById('tabNombre').classList.toggle('active', tab === 'nombre');
+  limpiar();
+  if (tab === 'nombre') nombreInput.focus();
+  else input.focus();
+}
+
+/* ════════════════════════════════
+   BÚSQUEDA POR CURP
+════════════════════════════════ */
+
+/* Auto-mayúsculas */
 input.addEventListener('input', () => {
   const pos = input.selectionStart;
   input.value = input.value.toUpperCase();
   input.setSelectionRange(pos, pos);
 });
-
-/* ── Consultar con Enter ── */
 input.addEventListener('keydown', e => {
   if (e.key === 'Enter') consultarCURP();
 });
 
-/* ── Usar CURP de ejemplo (Claudia Sheinbaum) ── */
-function usarEjemplo() {
-  input.value = 'PAOR691209HDFZRL04';
+function usarEjemplo(curp) {
+  switchTab('curp');
+  input.value = curp;
   consultarCURP();
 }
 
-/* ── UI: mostrar loader ── */
-function mostrarLoader() {
+async function consultarCURP() {
+  const curp = input.value.trim().toUpperCase();
+  if (!curp) { mostrarError('Por favor ingresa un CURP para consultar.'); return; }
+  if (curp.length !== 18) {
+    mostrarError(`El CURP debe tener exactamente 18 caracteres. Ingresaste ${curp.length}.`);
+    return;
+  }
+
+  limpiar();
+  mostrarLoader('Buscando en base de datos…');
+  btn.disabled = true;
+
+  try {
+    if (!listaDocentes.length) {
+      const res = await fetch('docentes.json');
+      listaDocentes = await res.json();
+    }
+    state.style.display = 'none';
+    const curpLimpio = curp.replace(/[-\s]/g, '');
+    const encontrado = listaDocentes.find(d => d.curp.replace(/[-\s]/g, '') === curpLimpio);
+    encontrado
+      ? (result.innerHTML = buildResultCard(encontrado))
+      : mostrarError(`No se encontró ningún registro con el CURP <strong>${curp}</strong>.`);
+  } catch {
+    mostrarError('No se pudo cargar la base de datos. Usa Live Server (VSCode) en lugar de abrir el archivo directamente.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ════════════════════════════════
+   BÚSQUEDA POR NOMBRE (autocomplete)
+════════════════════════════════ */
+
+function onNombreInput() {
+  highlightedIndex = -1;
+  const q = nombreInput.value.trim();
+
+  if (q.length < 2) {
+    cerrarDropdown();
+    return;
+  }
+
+  const terminos = q.toLowerCase().split(/\s+/);
+  const coincidencias = listaDocentes.filter(d => {
+    const texto = [d.nombre, d.apellido_paterno, d.apellido_materno]
+      .join(' ').toLowerCase();
+    return terminos.every(t => texto.includes(t));
+  });
+
+  renderDropdown(coincidencias, q);
+}
+
+function onNombreKeydown(e) {
+  const items = sugerencias.querySelectorAll('.suggestion-item');
+  if (!items.length) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1);
+    actualizarHighlight(items);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    highlightedIndex = Math.max(highlightedIndex - 1, 0);
+    actualizarHighlight(items);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (highlightedIndex >= 0) items[highlightedIndex].click();
+  } else if (e.key === 'Escape') {
+    cerrarDropdown();
+  }
+}
+
+function actualizarHighlight(items) {
+  items.forEach((el, i) => el.classList.toggle('highlighted', i === highlightedIndex));
+  if (highlightedIndex >= 0) items[highlightedIndex].scrollIntoView({ block: 'nearest' });
+}
+
+function renderDropdown(lista, query) {
+  if (!lista.length) {
+    sugerencias.style.display = 'block';
+    sugerencias.innerHTML = `<div class="no-results">Sin resultados para "<strong>${query}</strong>"</div>`;
+    return;
+  }
+
+  sugerencias.style.display = 'block';
+  sugerencias.innerHTML = lista.map((d, i) => {
+    const nombreFull = [d.nombre, d.apellido_paterno, d.apellido_materno].filter(Boolean).join(' ');
+    const nombreResaltado = resaltarCoincidencia(nombreFull, query);
+    return `
+      <div class="suggestion-item" data-index="${i}" onclick="seleccionarDocente(${listaDocentes.indexOf(d)})">
+        <div class="sug-avatar">${d.foto_inicial || '??'}</div>
+        <div class="sug-info">
+          <div class="sug-name">${nombreResaltado}</div>
+          <div class="sug-curp">${d.curp}</div>
+        </div>
+        <svg class="sug-arrow" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </div>`;
+  }).join('');
+}
+
+/* Resalta los caracteres que coinciden con la búsqueda */
+function resaltarCoincidencia(texto, query) {
+  const terminos = query.trim().split(/\s+/).filter(Boolean);
+  let result = texto;
+  terminos.forEach(t => {
+    const regex = new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    result = result.replace(regex, '<mark>$1</mark>');
+  });
+  return result;
+}
+
+function seleccionarDocente(index) {
+  const docente = listaDocentes[index];
+  if (!docente) return;
+  cerrarDropdown();
+  nombreInput.value = [docente.nombre, docente.apellido_paterno, docente.apellido_materno]
+    .filter(Boolean).join(' ');
+  limpiar();
+  result.innerHTML = buildResultCard(docente);
+  // scroll suave al resultado
+  setTimeout(() => result.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function cerrarDropdown() {
+  sugerencias.style.display = 'none';
+  sugerencias.innerHTML = '';
+  highlightedIndex = -1;
+}
+
+/* Cerrar dropdown al hacer clic fuera */
+document.addEventListener('click', e => {
+  if (!e.target.closest('#panelNombre')) cerrarDropdown();
+});
+
+/* ════════════════════════════════
+   UI COMPARTIDA
+════════════════════════════════ */
+
+function mostrarLoader(msg = 'Cargando…') {
   state.style.display = 'block';
   state.innerHTML = `
     <div class="loader">
       <div class="spinner"></div>
-      <p class="loader-text">Buscando en base de datos local…</p>
+      <p class="loader-text">${msg}</p>
     </div>`;
 }
 
-/* ── UI: mostrar error ── */
 function mostrarError(msg) {
   state.style.display = 'block';
   state.innerHTML = `
@@ -45,14 +217,16 @@ function mostrarError(msg) {
     </div>`;
 }
 
-/* ── UI: limpiar estado y resultado ── */
 function limpiar() {
   state.style.display = 'none';
   state.innerHTML = '';
   result.innerHTML = '';
 }
 
-/* ── Helpers ── */
+/* ════════════════════════════════
+   TARJETA DE RESULTADO
+════════════════════════════════ */
+
 function sexoLabel(s) {
   if (!s) return '—';
   const up = s.toUpperCase();
@@ -83,7 +257,6 @@ function formatFecha(f) {
   return f;
 }
 
-/* Color de partido */
 function partidoBadge(partido) {
   const colores = {
     'MORENA': { bg: '#8B0000', text: '#fff' },
@@ -93,22 +266,19 @@ function partidoBadge(partido) {
   };
   const c = colores[partido] || { bg: '#555', text: '#fff' };
   return `<span style="
-    display:inline-block;
-    background:${c.bg};color:${c.text};
+    display:inline-block;background:${c.bg};color:${c.text};
     border-radius:999px;padding:.2rem .7rem;
-    font-size:.7rem;font-weight:700;letter-spacing:.06em;
-  ">${partido}</span>`;
+    font-size:.7rem;font-weight:700;letter-spacing:.06em;">
+    ${partido}
+  </span>`;
 }
 
-/* ── Construir tarjeta de resultado ── */
 function buildResultCard(docente) {
   const nombreFull = [docente.nombre, docente.apellido_paterno, docente.apellido_materno]
     .filter(Boolean).join(' ');
 
   return `
     <div class="result-card">
-
-      <!-- Encabezado -->
       <div class="result-header">
         <div class="avatar">${docente.foto_inicial || '??'}</div>
         <div>
@@ -117,70 +287,55 @@ function buildResultCard(docente) {
             <div class="verified-dot"></div>
             ${docente.curp}
           </div>
-          <div style="margin-top:.5rem;font-size:.78rem;color:rgba(255,255,255,.75);">
-            ${docente.cargo}
-          </div>
+          <div style="margin-top:.5rem;font-size:.78rem;color:rgba(255,255,255,.75);">${docente.cargo}</div>
         </div>
       </div>
 
-      <!-- Grid de datos -->
       <div class="data-grid">
-
         <div class="data-item">
           <div class="data-item-label">Nombre(s)</div>
           <div class="data-item-value big">${docente.nombre || '—'}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Apellido Paterno</div>
           <div class="data-item-value big">${docente.apellido_paterno || '—'}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Apellido Materno</div>
           <div class="data-item-value big">${docente.apellido_materno || '—'}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Sexo</div>
           <div class="data-item-value">${sexoLabel(docente.sexo)}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Fecha de Nacimiento</div>
           <div class="data-item-value">${formatFecha(docente.fecha_nacimiento)}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Entidad de Nacimiento</div>
           <div class="data-item-value">${docente.entidad_nacimiento || '—'}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Municipio</div>
           <div class="data-item-value">${docente.municipio || '—'}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Nacionalidad</div>
           <div class="data-item-value">${docente.nacionalidad || '—'}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Cargo</div>
           <div class="data-item-value">${docente.cargo || '—'}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Período</div>
           <div class="data-item-value">${docente.periodo || '—'}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Partido</div>
           <div class="data-item-value">${partidoBadge(docente.partido)}</div>
         </div>
-
         <div class="data-item">
           <div class="data-item-label">Estatus</div>
           <div class="data-item-value">
@@ -192,10 +347,8 @@ function buildResultCard(docente) {
             </span>
           </div>
         </div>
+      </div>
 
-      </div><!-- /data-grid -->
-
-      <!-- CURP completo -->
       <div style="padding:.9rem 1.5rem;background:rgba(107,18,48,.03);border-top:1px solid rgba(107,18,48,.07);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
         <div>
           <div style="font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--guinda);opacity:.7;margin-bottom:.2rem;">CURP Completo</div>
@@ -205,48 +358,5 @@ function buildResultCard(docente) {
           <p style="font-size:.68rem;color:#bbb;">Fuente: Base de datos local ICATEBCS</p>
         </div>
       </div>
-
     </div>`;
-}
-
-/* ── Función principal: busca en el JSON local ── */
-async function consultarCURP() {
-  const curp = input.value.trim().toUpperCase();
-
-  if (!curp) {
-    mostrarError('Por favor ingresa un CURP para consultar.');
-    return;
-  }
-  if (curp.length !== 18) {
-    mostrarError(`El CURP debe tener exactamente 18 caracteres. Ingresaste ${curp.length}.`);
-    return;
-  }
-
-  limpiar();
-  mostrarLoader();
-  btn.disabled = true;
-
-  try {
-    const res   = await fetch('docentes.json');
-    const lista = await res.json();
-
-    state.style.display = 'none';
-
-    // Búsqueda insensible a guiones y espacios
-    const curpLimpio = curp.replace(/[-\s]/g, '');
-    const encontrado = lista.find(d =>
-      d.curp.replace(/[-\s]/g, '') === curpLimpio
-    );
-
-    if (encontrado) {
-      result.innerHTML = buildResultCard(encontrado);
-    } else {
-      mostrarError(`No se encontró ningún registro con el CURP <strong>${curp}</strong> en la base de datos local.`);
-    }
-
-  } catch (err) {
-    mostrarError('No se pudo cargar la base de datos. Abre el proyecto con Live Server (VSCode) o un servidor local, no como archivo directo.');
-  } finally {
-    btn.disabled = false;
-  }
 }
