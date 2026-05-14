@@ -1,11 +1,8 @@
 /* ──────────────────────────────────────────
-   ICATEBCS – Consulta de CURP
-   curp.js — Lógica de consulta a la API
-   Token: reemplaza "pruebas" por tu token real
-   de https://valida-curp.com.mx
+   ICATEBCS – Consulta de CURP (Modo Local)
+   curp.js — Lee de docentes.json localmente
+   Sin consumo de API externa
 ────────────────────────────────────────── */
-
-const TOKEN = '7a761a3a-be7b-4d18-9c00-16cc28541559'; // <-- cambia aquí tu token de producción
 
 const input  = document.getElementById('curpInput');
 const btn    = document.getElementById('btnBuscar');
@@ -24,9 +21,9 @@ input.addEventListener('keydown', e => {
   if (e.key === 'Enter') consultarCURP();
 });
 
-/* ── Usar CURP de ejemplo ── */
+/* ── Usar CURP de ejemplo (Claudia Sheinbaum) ── */
 function usarEjemplo() {
-  input.value = 'XAXX010101HBCXXX00';
+  input.value = 'SHEPC620624MDFRRD09';
   consultarCURP();
 }
 
@@ -36,7 +33,7 @@ function mostrarLoader() {
   state.innerHTML = `
     <div class="loader">
       <div class="spinner"></div>
-      <p class="loader-text">Consultando registro en RENAPO…</p>
+      <p class="loader-text">Buscando en base de datos local…</p>
     </div>`;
 }
 
@@ -62,12 +59,6 @@ function limpiar() {
 }
 
 /* ── Helpers ── */
-function iniciales(nombre) {
-  if (!nombre) return '?';
-  const partes = nombre.trim().split(/\s+/);
-  return (partes[0]?.[0] || '') + (partes[1]?.[0] || '');
-}
-
 function sexoLabel(s) {
   if (!s) return '—';
   const up = s.toUpperCase();
@@ -83,48 +74,57 @@ function sexoLabel(s) {
 
 function formatFecha(f) {
   if (!f) return '—';
-  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   const partes = f.includes('-') ? f.split('-') : f.split('/');
   if (partes.length === 3) {
     if (f.includes('-')) {
       const [y, m, d] = partes;
-      return `${d} ${meses[+m - 1]} ${y}`;
+      return `${+d} de ${meses[+m - 1]} de ${y}`;
     } else {
       const [d, m, y] = partes;
-      return `${d} ${meses[+m - 1]} ${y}`;
+      return `${+d} de ${meses[+m - 1]} de ${y}`;
     }
   }
   return f;
 }
 
-/* ── Construir tarjeta de resultado ── */
-function buildResultCard(data, curp) {
-  const r           = data.response || data;
-  const nombre      = r.nombre             || r.names           || '';
-  const aPaterno    = r.apellido_paterno   || r.first_lastname  || '';
-  const aMaterno    = r.apellido_materno   || r.second_lastname || '';
-  const nombreFull  = [nombre, aPaterno, aMaterno].filter(Boolean).join(' ');
-  const sexo        = r.sexo               || r.gender          || '';
-  const fechaNac    = r.fecha_nacimiento   || r.birth_date      || '';
-  const entidad     = r.entidad_nacimiento || r.entity_birth    || '';
-  const municipio   = r.municipio          || r.municipality    || '';
-  const nacionalidad= r.nacionalidad       || r.nationality     || '';
-  const estatus     = r.estatus            || r.status          || 'Activo';
-  const docDocto    = r.documento          || r.document        || '';
+/* Color de partido */
+function partidoBadge(partido) {
+  const colores = {
+    'MORENA': { bg: '#8B0000', text: '#fff' },
+    'PRI':    { bg: '#006847', text: '#fff' },
+    'PAN':    { bg: '#003087', text: '#fff' },
+    'PRD':    { bg: '#FFCC00', text: '#333' },
+  };
+  const c = colores[partido] || { bg: '#555', text: '#fff' };
+  return `<span style="
+    display:inline-block;
+    background:${c.bg};color:${c.text};
+    border-radius:999px;padding:.2rem .7rem;
+    font-size:.7rem;font-weight:700;letter-spacing:.06em;
+  ">${partido}</span>`;
+}
 
-  const inis = iniciales(nombreFull) || curp.substring(0, 2);
+/* ── Construir tarjeta de resultado ── */
+function buildResultCard(docente) {
+  const nombreFull = [docente.nombre, docente.apellido_paterno, docente.apellido_materno]
+    .filter(Boolean).join(' ');
 
   return `
     <div class="result-card">
 
-      <!-- Encabezado con nombre y CURP -->
+      <!-- Encabezado -->
       <div class="result-header">
-        <div class="avatar">${inis.toUpperCase()}</div>
+        <div class="avatar">${docente.foto_inicial || '??'}</div>
         <div>
-          <div class="result-name">${nombreFull || 'Nombre no disponible'}</div>
+          <div class="result-name">${nombreFull}</div>
           <div class="result-curp-tag">
             <div class="verified-dot"></div>
-            ${curp}
+            ${docente.curp}
+          </div>
+          <div style="margin-top:.5rem;font-size:.78rem;color:rgba(255,255,255,.75);">
+            ${docente.cargo}
           </div>
         </div>
       </div>
@@ -134,55 +134,57 @@ function buildResultCard(data, curp) {
 
         <div class="data-item">
           <div class="data-item-label">Nombre(s)</div>
-          <div class="data-item-value big">${nombre || '—'}</div>
+          <div class="data-item-value big">${docente.nombre || '—'}</div>
         </div>
 
         <div class="data-item">
           <div class="data-item-label">Apellido Paterno</div>
-          <div class="data-item-value big">${aPaterno || '—'}</div>
+          <div class="data-item-value big">${docente.apellido_paterno || '—'}</div>
         </div>
 
         <div class="data-item">
           <div class="data-item-label">Apellido Materno</div>
-          <div class="data-item-value big">${aMaterno || '—'}</div>
+          <div class="data-item-value big">${docente.apellido_materno || '—'}</div>
         </div>
 
         <div class="data-item">
           <div class="data-item-label">Sexo</div>
-          <div class="data-item-value">${sexoLabel(sexo)}</div>
+          <div class="data-item-value">${sexoLabel(docente.sexo)}</div>
         </div>
 
         <div class="data-item">
           <div class="data-item-label">Fecha de Nacimiento</div>
-          <div class="data-item-value">${formatFecha(fechaNac)}</div>
+          <div class="data-item-value">${formatFecha(docente.fecha_nacimiento)}</div>
         </div>
 
         <div class="data-item">
           <div class="data-item-label">Entidad de Nacimiento</div>
-          <div class="data-item-value">${entidad || '—'}</div>
+          <div class="data-item-value">${docente.entidad_nacimiento || '—'}</div>
         </div>
 
-        ${municipio ? `
         <div class="data-item">
           <div class="data-item-label">Municipio</div>
-          <div class="data-item-value">${municipio}</div>
-        </div>` : ''}
+          <div class="data-item-value">${docente.municipio || '—'}</div>
+        </div>
 
-        ${nacionalidad ? `
         <div class="data-item">
           <div class="data-item-label">Nacionalidad</div>
-          <div class="data-item-value">${nacionalidad}</div>
-        </div>` : ''}
-
-        ${docDocto ? `
-        <div class="data-item">
-          <div class="data-item-label">Documento</div>
-          <div class="data-item-value">${docDocto}</div>
-        </div>` : ''}
+          <div class="data-item-value">${docente.nacionalidad || '—'}</div>
+        </div>
 
         <div class="data-item">
-          <div class="data-item-label">CURP</div>
-          <div class="data-item-value" style="font-size:.82rem;letter-spacing:.08em;font-family:monospace;">${curp}</div>
+          <div class="data-item-label">Cargo</div>
+          <div class="data-item-value">${docente.cargo || '—'}</div>
+        </div>
+
+        <div class="data-item">
+          <div class="data-item-label">Período</div>
+          <div class="data-item-value">${docente.periodo || '—'}</div>
+        </div>
+
+        <div class="data-item">
+          <div class="data-item-label">Partido</div>
+          <div class="data-item-value">${partidoBadge(docente.partido)}</div>
         </div>
 
         <div class="data-item">
@@ -192,25 +194,28 @@ function buildResultCard(data, curp) {
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              ${estatus}
+              ${docente.estatus || 'Activo'}
             </span>
           </div>
         </div>
 
       </div><!-- /data-grid -->
 
-      <!-- Nota institucional -->
-      <div style="padding:1rem 1.5rem;background:rgba(107,18,48,.03);border-top:1px solid rgba(107,18,48,.07);">
-        <p style="font-size:.7rem;color:#999;letter-spacing:.03em;">
-          ⓘ Información obtenida del Registro Nacional de Población (RENAPO) vía API Valida-CURP.
-          Uso exclusivo del sistema interno de ICATEBCS.
-        </p>
+      <!-- CURP completo -->
+      <div style="padding:.9rem 1.5rem;background:rgba(107,18,48,.03);border-top:1px solid rgba(107,18,48,.07);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--guinda);opacity:.7;margin-bottom:.2rem;">CURP Completo</div>
+          <div style="font-family:monospace;font-size:.9rem;letter-spacing:.1em;color:var(--text-dark);font-weight:600;">${docente.curp}</div>
+        </div>
+        <div style="margin-left:auto;">
+          <p style="font-size:.68rem;color:#bbb;">Fuente: Base de datos local ICATEBCS</p>
+        </div>
       </div>
 
     </div>`;
 }
 
-/* ── Función principal de consulta ── */
+/* ── Función principal: busca en el JSON local ── */
 async function consultarCURP() {
   const curp = input.value.trim().toUpperCase();
 
@@ -228,19 +233,25 @@ async function consultarCURP() {
   btn.disabled = true;
 
   try {
-    const url = `https://api.valida-curp.com.mx/curp/obtener_datos/?token=${TOKEN}&curp=${curp}`;
-    const res  = await fetch(url);
-    const data = await res.json();
+    const res   = await fetch('docentes.json');
+    const lista = await res.json();
 
     state.style.display = 'none';
 
-    if (data.error) {
-      mostrarError(`No se encontró información: ${data.error_message || 'CURP no localizado en el padrón.'}`);
+    // Búsqueda insensible a guiones y espacios
+    const curpLimpio = curp.replace(/[-\s]/g, '');
+    const encontrado = lista.find(d =>
+      d.curp.replace(/[-\s]/g, '') === curpLimpio
+    );
+
+    if (encontrado) {
+      result.innerHTML = buildResultCard(encontrado);
     } else {
-      result.innerHTML = buildResultCard(data, curp);
+      mostrarError(`No se encontró ningún registro con el CURP <strong>${curp}</strong> en la base de datos local.`);
     }
+
   } catch (err) {
-    mostrarError('Error de conexión con el servidor de RENAPO. Intenta de nuevo en un momento.');
+    mostrarError('No se pudo cargar la base de datos. Abre el proyecto con Live Server (VSCode) o un servidor local, no como archivo directo.');
   } finally {
     btn.disabled = false;
   }
