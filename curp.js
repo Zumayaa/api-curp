@@ -5,7 +5,7 @@
    de https://valida-curp.com.mx
 ────────────────────────────────────────── */
 
-const TOKEN = 'pruebas'; // <-- cambia aquí tu token de producción
+const TOKEN = '7a761a3a-be7b-4d18-9c00-16cc28541559'; // <-- cambia aquí tu token de producción
 
 const input  = document.getElementById('curpInput');
 const btn    = document.getElementById('btnBuscar');
