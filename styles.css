@@ -372,3 +372,59 @@ footer span { color: var(--guinda); opacity: .6; }
   font-size: .82rem; color: #aaa;
   text-align: center;
 }
+
+/* ── BOTÓN FLOTANTE EXPORTAR ── */
+.fab-export {
+  position: fixed;
+  bottom: 2rem; right: 2rem;
+  z-index: 200;
+  display: flex; align-items: center; gap: .55rem;
+  padding: .75rem 1.35rem;
+  background: linear-gradient(135deg, var(--guinda-dark) 0%, var(--guinda) 100%);
+  color: #fff;
+  border: none; border-radius: 999px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .82rem; font-weight: 600; letter-spacing: .03em;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(107,18,48,.40), 0 2px 6px rgba(0,0,0,.15);
+  transition: transform .2s, box-shadow .2s, opacity .2s;
+}
+.fab-export:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 32px rgba(107,18,48,.45), 0 4px 10px rgba(0,0,0,.15);
+}
+.fab-export:active { transform: translateY(-1px); }
+
+/* línea dorada sutil arriba del botón */
+.fab-export::before {
+  content: '';
+  position: absolute;
+  inset: 0; border-radius: 999px;
+  border: 1.5px solid rgba(201,168,76,.35);
+  pointer-events: none;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 5.5rem; right: 2rem;
+  z-index: 300;
+  display: flex; align-items: center; gap: .5rem;
+  padding: .65rem 1.15rem;
+  background: #1a1a2e;
+  color: #fff;
+  border-radius: 10px;
+  font-size: .78rem; font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,.25);
+  opacity: 0; transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity .3s, transform .3s;
+}
+.toast.show {
+  opacity: 1; transform: translateY(0);
+}
+
+@media (max-width: 580px) {
+  .fab-export span { display: none; }
+  .fab-export { padding: .85rem; border-radius: 50%; }
+}

@@ -1,3 +1,8 @@
+/* ──────────────────────────────────────────
+   ICATEBCS – Consulta de CURP (Modo Local)
+   curp.js — Búsqueda por CURP y por Nombre
+────────────────────────────────────────── */
+
 /* ── Referencias DOM ── */
 const input       = document.getElementById('curpInput');
 const btn         = document.getElementById('btnBuscar');
@@ -359,4 +364,68 @@ function buildResultCard(docente) {
         </div>
       </div>
     </div>`;
+}
+
+/* ════════════════════════════════
+   EXPORTAR A .XLSX
+════════════════════════════════ */
+
+function exportarXLSX() {
+  if (!listaDocentes.length) {
+    mostrarError('No hay datos cargados para exportar. Espera a que cargue la base de datos.');
+    return;
+  }
+
+  /* ── 1. Columnas en el mismo orden que el JSON ── */
+  const columnas = [
+    { key: 'curp',                label: 'CURP'                 },
+    { key: 'nombre',              label: 'Nombre(s)'            },
+    { key: 'apellido_paterno',    label: 'Apellido Paterno'     },
+    { key: 'apellido_materno',    label: 'Apellido Materno'     },
+    { key: 'sexo',                label: 'Sexo'                 },
+    { key: 'fecha_nacimiento',    label: 'Fecha de Nacimiento'  },
+    { key: 'entidad_nacimiento',  label: 'Entidad de Nacimiento'},
+    { key: 'municipio',           label: 'Municipio'            },
+    { key: 'nacionalidad',        label: 'Nacionalidad'         },
+    { key: 'estatus',             label: 'Estatus'              },
+    { key: 'cargo',               label: 'Cargo'                },
+    { key: 'periodo',             label: 'Período'              },
+    { key: 'partido',             label: 'Partido'              },
+  ];
+
+  /* ── 2. Construir filas ── */
+  const filas = listaDocentes.map(d =>
+    columnas.reduce((obj, col) => {
+      obj[col.label] = d[col.key] ?? '';
+      return obj;
+    }, {})
+  );
+
+  /* ── 3. Crear hoja y libro ── */
+  const hoja  = XLSX.utils.json_to_sheet(filas, { header: columnas.map(c => c.label) });
+  const libro = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(libro, hoja, 'Docentes');
+
+  /* ── 4. Ancho de columnas proporcional al contenido ── */
+  const anchos = columnas.map(col => {
+    const maxContenido = listaDocentes.reduce((max, d) => {
+      const val = String(d[col.key] ?? '');
+      return Math.max(max, val.length);
+    }, col.label.length);
+    return { wch: Math.min(maxContenido + 4, 40) }; // +4 de padding, máx 40
+  });
+  hoja['!cols'] = anchos;
+
+  /* ── 5. Nombre de archivo con fecha ── */
+  const hoy = new Date();
+  const fecha = `${hoy.getFullYear()}${String(hoy.getMonth()+1).padStart(2,'0')}${String(hoy.getDate()).padStart(2,'0')}`;
+  const nombreArchivo = `ICATEBCS_Docentes_${fecha}.xlsx`;
+
+  /* ── 6. Descargar ── */
+  XLSX.writeFile(libro, nombreArchivo);
+
+  /* ── 7. Toast de confirmación ── */
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
 }

@@ -91,7 +91,7 @@
                 <p class="hint">
                     Prueba con:
                     <span style="cursor:pointer;text-decoration:underline dotted;color:var(--guinda);font-weight:500;"
-                        onclick="usarEjemplo('PAOR691209HDFZRL04')">Claudia</span> ·
+                        onclick="usarEjemplo('SHEPC620624MDFRRD09')">Claudia</span> ·
                     <span style="cursor:pointer;text-decoration:underline dotted;color:var(--guinda);font-weight:500;"
                         onclick="usarEjemplo('LOOA531113HTCPBN07')">AMLO</span> ·
                     <span style="cursor:pointer;text-decoration:underline dotted;color:var(--guinda);font-weight:500;"
@@ -129,7 +129,27 @@
         Prototipo desarrollado para <span>ICATEBCS</span> · Base de datos local · Solo uso interno
     </footer>
 
+    <!-- SheetJS para exportar a .xlsx desde el navegador -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="curp.js"></script>
+
+    <!-- Botón flotante exportar -->
+    <button class="fab-export" id="fabExport" onclick="exportarXLSX()" title="Exportar base de datos a Excel">
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 3v13m0 0-4-4m4 4 4-4" />
+            <path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2" />
+        </svg>
+        <span>Exportar Excel</span>
+    </button>
+
+    <!-- Toast de confirmación -->
+    <div class="toast" id="toast">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12" />
+        </svg>
+        Archivo descargado correctamente
+    </div>
+
 </body>
 
 </html>
