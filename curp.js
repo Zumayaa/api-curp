@@ -13,20 +13,15 @@ let highlightedIndex = -1;
 
 async function inicializar() {
   try {
-    const [docentesRes, cursosRes] = await Promise.all([
-      fetch('docentes.json'),
-      fetch('cursos.json').catch(() => null)
-    ]);
+    const docentesRes = await fetch('docentes.json');
     listaPersonas = await docentesRes.json();
-    const catalogoCursos = cursosRes?.ok ? await cursosRes.json() : null;
     listaDocentes = listaPersonas.filter(p => normalizar(p.rol) === 'capacitador');
     listaAlumnos = listaPersonas.filter(p => normalizar(p.rol) === 'alumno');
-    listaCursos = catalogoCursos ? construirCursosDesdeCatalogo(catalogoCursos, listaPersonas) : construirCursos(listaPersonas);
+    listaCursos = construirCursos(listaPersonas);
     renderDashboard();
     renderDocentes();
     renderCursos();
     renderAlumnos();
-    renderEjemplos();
   } catch (e) {
     document.getElementById('kpiGrid').innerHTML = `
       <div class="error-box" style="grid-column:1/-1">
@@ -99,7 +94,7 @@ function renderDocentes() {
           <div class="entity-avatar teacher">${doc.foto_inicial || iniciales(nombreCompleto(doc))}</div>
           <div>
             <h3>${nombreCompleto(doc)}</h3>
-            <p>${doc.municipio || 'Sin municipio'} · ${doc.correo || 'Sin correo'}</p>
+            <p>${doc.municipio || 'Sin municipio'} · ${doc.correo || 'Sin correo'} · ${doc.curp || 'Sin curp'}</p>
           </div>
         </div>
         <div class="metric-strip">
@@ -349,21 +344,6 @@ function construirCursos(personas) {
   return Array.from(cursos.values()).sort((a,b) => a.nombre.localeCompare(b.nombre, 'es'));
 }
 
-function construirCursosDesdeCatalogo(catalogo, personas) {
-  return catalogo.map(curso => ({
-    id: curso.id,
-    nombre: curso.nombre,
-    sede: curso.sede,
-    fecha_inicio: curso.fecha_inicio,
-    fecha_fin: curso.fecha_fin,
-    estatus: curso.estatus,
-    docente: personas.find(p => limpiarCurp(p.curp) === limpiarCurp(curso.docente_curp)) || null,
-    alumnos: (curso.alumnos_curp || [])
-      .map(curp => personas.find(p => limpiarCurp(p.curp) === limpiarCurp(curp)))
-      .filter(Boolean)
-  })).sort((a,b) => a.nombre.localeCompare(b.nombre, 'es'));
-}
-
 function cursosDePersona(persona) {
   return listaCursos.filter(c => c.docente?.id === persona.id || c.alumnos.some(a => a.id === persona.id));
 }
@@ -461,11 +441,6 @@ function generarConstancia(nombreCompleto, nombreCurso, fechaFin, sede) {
   showToast(`Constancia de "${nombreCurso}" descargada`);
 }
 
-function renderEjemplos() {
-  document.getElementById('hintEjemplos').innerHTML = `Prueba con: ${listaAlumnos.slice(0, 3).map(a =>
-    `<span class="hint-link" onclick="usarEjemplo('${a.curp}')">${nombreCompleto(a).split(' ')[0]}</span>`
-  ).join(' · ')}`;
-}
 
 function mostrarLoader(msg = 'Cargando...') {
   state.style.display = 'block';
