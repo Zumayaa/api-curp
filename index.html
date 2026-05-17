@@ -3,18 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ICATEBCS – Sistema de Control Escolar y Capacitación</title>
+  <title>ICATEBCS - Sistema de Control Escolar y Capacitacion</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
   <div class="bg-pattern"></div>
 
-  <!-- ══════════════════════════════════════
-       HEADER
-  ══════════════════════════════════════ -->
   <header>
     <div class="header-inner">
       <div class="logo-ring">
@@ -24,41 +20,40 @@
       </div>
       <div class="header-text">
         <h1>ICATEBCS</h1>
-        <p>Instituto de Capacitación para el Trabajo del Estado de B.C.S.</p>
+        <p>Instituto de Capacitacion para el Trabajo del Estado de B.C.S.</p>
       </div>
       <nav class="header-nav">
         <button class="nav-btn active" id="navDashboard" onclick="showSection('dashboard')">
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           Dashboard
         </button>
-        <button class="nav-btn" id="navBusqueda" onclick="showSection('busqueda')">
-          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          Consulta
+        <button class="nav-btn" id="navDocentes" onclick="showSection('docentes')">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><path d="M12 2v3"/></svg>
+          Docentes
+        </button>
+        <button class="nav-btn" id="navCursos" onclick="showSection('cursos')">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Cursos
+        </button>
+        <button class="nav-btn" id="navAlumnos" onclick="showSection('alumnos')">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          Alumnos
         </button>
       </nav>
     </div>
   </header>
   <div class="gold-line"></div>
 
-  <!-- ══════════════════════════════════════
-       MAIN
-  ══════════════════════════════════════ -->
   <main>
-
-    <!-- ─────────────────────────────────
-         SECCIÓN: DASHBOARD GERENCIAL
-    ───────────────────────────────── -->
     <section id="sectionDashboard">
-
-      <div class="section-header">
+      <div class="section-header split-header">
         <div>
-          <p class="section-eyebrow">Panel de Control</p>
-          <h2 class="section-title">Dashboard Gerencial</h2>
-          <p class="section-sub">Resumen ejecutivo del sistema de capacitación · <span id="fechaHoy"></span></p>
+          <p class="section-eyebrow">Panel institucional</p>
+          <h2 class="section-title">Docentes, Cursos y Alumnos</h2>
+          <p class="section-sub">Resumen ejecutivo de la relacion docente - curso - alumno · <span id="fechaHoy"></span></p>
         </div>
       </div>
 
-      <!-- KPI Cards -->
       <div class="kpi-grid" id="kpiGrid">
         <div class="kpi-card kpi-skeleton"></div>
         <div class="kpi-card kpi-skeleton"></div>
@@ -66,43 +61,60 @@
         <div class="kpi-card kpi-skeleton"></div>
       </div>
 
-      <!-- Segunda fila: Distribución de roles + Últimas altas -->
       <div class="dashboard-row">
-
-        <!-- Distribución por sede -->
         <div class="dash-panel">
           <div class="dash-panel-header">
-            <span class="dash-panel-title">Distribución por Sede</span>
+            <span class="dash-panel-title">Cursos por sede</span>
           </div>
           <div id="chartSedes" class="chart-bars"></div>
         </div>
-
-        <!-- Actividad reciente -->
         <div class="dash-panel">
           <div class="dash-panel-header">
-            <span class="dash-panel-title">Personas Registradas</span>
-            <button class="dash-ver-mas" onclick="showSection('busqueda')">Ver todas →</button>
+            <span class="dash-panel-title">Cursos activos</span>
+            <button class="dash-ver-mas" onclick="showSection('cursos')">Ver cursos</button>
           </div>
           <div id="listaReciente" class="recent-list"></div>
         </div>
-
       </div>
     </section>
 
-    <!-- ─────────────────────────────────
-         SECCIÓN: CONSULTA / BÚSQUEDA
-    ───────────────────────────────── -->
-    <section id="sectionBusqueda" style="display:none;">
+    <section id="sectionDocentes" style="display:none;">
+      <div class="section-header split-header">
+        <div>
+          <p class="section-eyebrow">Trabajadores academicos</p>
+          <h2 class="section-title">Docentes y cursos impartidos</h2>
+          <p class="section-sub">Prioriza a capacitadores, carga academica, sedes y alumnos relacionados.</p>
+        </div>
+        <div class="toolbar-search">
+          <input id="docenteFiltro" class="mini-search" type="search" placeholder="Buscar docente o curso" oninput="renderDocentes()" />
+        </div>
+      </div>
+      <div id="docentesGrid" class="entity-grid"></div>
+    </section>
 
+    <section id="sectionCursos" style="display:none;">
+      <div class="section-header split-header">
+        <div>
+          <p class="section-eyebrow">Oferta academica</p>
+          <h2 class="section-title">Cursos, docentes y alumnos</h2>
+          <p class="section-sub">Consulta cada curso como punto central de la operacion.</p>
+        </div>
+        <div class="toolbar-search">
+          <input id="cursoFiltro" class="mini-search" type="search" placeholder="Buscar curso, sede o docente" oninput="renderCursos()" />
+        </div>
+      </div>
+      <div id="cursosGrid" class="course-grid"></div>
+    </section>
+
+    <section id="sectionAlumnos" style="display:none;">
       <div class="section-header">
         <div>
-          <p class="section-eyebrow">Sistema de Consulta</p>
-          <h2 class="section-title">Verificación de CURP</h2>
-          <p class="section-sub">Consulta por CURP o busca al participante por nombre.</p>
+          <p class="section-eyebrow">Control escolar</p>
+          <h2 class="section-title">Alumnos por curso y consulta CURP</h2>
+          <p class="section-sub">Busca participantes y revisa su historial de capacitacion.</p>
         </div>
       </div>
 
-      <!-- TABS -->
       <div class="tabs">
         <button class="tab active" id="tabCurp" onclick="switchTab('curp')">
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
@@ -114,39 +126,25 @@
         </button>
       </div>
 
-      <!-- Search card -->
       <div class="search-card">
-
-        <!-- Panel CURP -->
         <div id="panelCurp">
           <label class="search-label" for="curpInput">CURP del participante</label>
           <div class="input-icon-wrap">
             <svg class="input-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
-            <input id="curpInput" class="curp-input with-icon" type="text" maxlength="18"
-              placeholder="Ej: CARM890314MBCSTM09" autocomplete="off" spellcheck="false"/>
+            <input id="curpInput" class="curp-input with-icon" type="text" maxlength="18" placeholder="Ej: CARM890314MBCSTM09" autocomplete="off" spellcheck="false"/>
             <button class="btn-search" id="btnBuscar" onclick="consultarCURP()">
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
               Consultar
             </button>
           </div>
-          <p class="hint">
-            Prueba con:
-            <span class="hint-link" onclick="usarEjemplo('CARM890314MBCSTM09')">Fernanda Castro</span> ·
-            <span class="hint-link" onclick="usarEjemplo('MEVJ750628HBCNDL07')">Jorge Méndez</span> ·
-            <span class="hint-link" onclick="usarEjemplo('PELA950902MBCDRN05')">Ana Pedraza</span> ·
-            <span class="hint-link" onclick="usarEjemplo('MOIC910711MBCRNL02')">Claudia Moreno</span>
-          </p>
+          <p class="hint" id="hintEjemplos"></p>
         </div>
 
-        <!-- Panel Nombre -->
         <div id="panelNombre" style="display:none;">
-          <label class="search-label" for="nombreInput">Nombre o apellido del participante</label>
+          <label class="search-label" for="nombreInput">Nombre o apellido del alumno</label>
           <div class="input-icon-wrap" style="position:relative;">
             <svg class="input-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-            <input id="nombreInput" class="curp-input with-icon" type="text"
-              placeholder="Ej: Fernanda, Méndez, Castro…"
-              autocomplete="off" spellcheck="false"
-              oninput="onNombreInput()" onkeydown="onNombreKeydown(event)"/>
+            <input id="nombreInput" class="curp-input with-icon" type="text" placeholder="Ej: Fernanda, Pedraza, Castro" autocomplete="off" spellcheck="false" oninput="onNombreInput()" onkeydown="onNombreKeydown(event)"/>
             <div id="sugerencias" class="suggestions-dropdown" style="display:none;"></div>
           </div>
           <p class="hint">Escribe al menos 2 letras para ver sugerencias.</p>
@@ -155,23 +153,19 @@
         <div class="state-area" id="stateArea" style="display:none;"></div>
       </div>
 
-      <!-- Resultado -->
       <div id="resultArea" style="margin-top:1.75rem;"></div>
-
+      <div id="alumnosGrid" class="entity-grid student-list-block"></div>
     </section>
-
   </main>
 
   <footer>
-    Sistema desarrollado para <span>ICATEBCS</span> · Control Escolar y Capacitación · BCS, México
+    Sistema desarrollado para <span>ICATEBCS</span> · Control Escolar y Capacitacion · BCS, Mexico
   </footer>
 
-  <!-- CDNs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="curp.js"></script>
 
-  <!-- Botón flotante exportar -->
   <button class="fab-export" id="fabExport" onclick="exportarXLSX()" title="Exportar base de datos a Excel">
     <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
       <path d="M12 3v13m0 0-4-4m4 4 4-4"/>
@@ -180,11 +174,9 @@
     <span>Exportar Excel</span>
   </button>
 
-  <!-- Toast -->
   <div class="toast" id="toast">
     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-    <span id="toastMsg">Operación completada</span>
+    <span id="toastMsg">Operacion completada</span>
   </div>
-
 </body>
 </html>

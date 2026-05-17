@@ -1,0 +1,62 @@
+[
+  {
+    "id": "C1",
+    "nombre": "Ofimatica Basica",
+    "docente_curp": "RICM840923HBCSGN04",
+    "alumnos_curp": ["CARM890314MBCSTM09", "MOIC910711MBCRNL02"],
+    "fecha_inicio": "2024-01-15",
+    "fecha_fin": "2024-03-15",
+    "sede": "Plantel La Paz Centro",
+    "estatus": "Aprobado"
+  },
+  {
+    "id": "C2",
+    "nombre": "Contabilidad Basica",
+    "docente_curp": "RICM840923HBCSGN04",
+    "alumnos_curp": ["CARM890314MBCSTM09"],
+    "fecha_inicio": "2025-01-20",
+    "fecha_fin": "2025-04-20",
+    "sede": "Plantel La Paz Centro",
+    "estatus": "En curso"
+  },
+  {
+    "id": "C3",
+    "nombre": "Primeros Auxilios",
+    "docente_curp": "SAFR820117HBCNLB03",
+    "alumnos_curp": ["PELA950902MBCDRN05"],
+    "fecha_inicio": "2024-03-01",
+    "fecha_fin": "2024-04-15",
+    "sede": "Plantel La Paz Sur",
+    "estatus": "Aprobado"
+  },
+  {
+    "id": "C4",
+    "nombre": "Cosmetologia Avanzada",
+    "docente_curp": "SAFR820117HBCNLB03",
+    "alumnos_curp": ["PELA950902MBCDRN05", "CARM890314MBCSTM09"],
+    "fecha_inicio": "2025-01-13",
+    "fecha_fin": "2025-04-13",
+    "sede": "Plantel La Paz Centro",
+    "estatus": "En curso"
+  },
+  {
+    "id": "C5",
+    "nombre": "Seguridad Industrial",
+    "docente_curp": "MEVJ750628HBCNDL07",
+    "alumnos_curp": ["MOIC910711MBCRNL02"],
+    "fecha_inicio": "2024-02-05",
+    "fecha_fin": "2024-04-05",
+    "sede": "Plantel Los Cabos",
+    "estatus": "Aprobado"
+  },
+  {
+    "id": "C6",
+    "nombre": "Turismo y Hospitalidad",
+    "docente_curp": "MEVJ750628HBCNDL07",
+    "alumnos_curp": ["MOIC910711MBCRNL02", "PELA950902MBCDRN05"],
+    "fecha_inicio": "2025-01-27",
+    "fecha_fin": "2025-04-27",
+    "sede": "Plantel Los Cabos",
+    "estatus": "En curso"
+  }
+]
