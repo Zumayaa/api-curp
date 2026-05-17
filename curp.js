@@ -4,6 +4,13 @@ const state = document.getElementById('stateArea');
 const result = document.getElementById('resultArea');
 const nombreInput = document.getElementById('nombreInput');
 const sugerencias = document.getElementById('sugerencias');
+const docenteCurpInput = document.getElementById('docenteCurpInput');
+const docenteNombreInput = document.getElementById('docenteNombreInput');
+const docenteSugerencias = document.getElementById('docenteSugerencias');
+const docenteResult = document.getElementById('docenteResult');
+const docenteStateArea = document.getElementById('docenteStateArea');
+
+
 
 let listaPersonas = [];
 let listaDocentes = [];
@@ -84,33 +91,79 @@ function renderDocentes() {
     const cursos = cursosDePersona(doc).map(c => c.nombre).join(' ');
     return normalizar(`${nombreCompleto(doc)} ${doc.municipio} ${cursos}`).includes(q);
   });
+document.getElementById('docentesGrid').innerHTML = `
 
-  document.getElementById('docentesGrid').innerHTML = docentes.map(doc => {
+  <div class="section-header compact-header" style="grid-column:1/-1;">
+    <div>
+      <p class="section-eyebrow">Listado general</p>
+      <h2 class="section-title">Docentes registrados</h2>
+    </div>
+  </div>
+
+  ${docentes.map(doc => {
+
     const cursos = cursosDePersona(doc);
     const alumnosRelacionados = alumnosDeDocente(doc);
+
     return `
       <article class="entity-card">
+
         <div class="entity-topline">
-          <div class="entity-avatar teacher">${doc.foto_inicial || iniciales(nombreCompleto(doc))}</div>
+          <div class="entity-avatar teacher">
+            ${doc.foto_inicial || iniciales(nombreCompleto(doc))}
+          </div>
+
           <div>
             <h3>${nombreCompleto(doc)}</h3>
-            <p>${doc.municipio || 'Sin municipio'} · ${doc.correo || 'Sin correo'} · ${doc.curp || 'Sin curp'}</p>
+
+            <p>
+              ${doc.municipio || 'Sin municipio'}
+              ·
+              ${doc.correo || 'Sin correo'}
+              ·
+              ${doc.curp || 'Sin curp'}
+            </p>
           </div>
         </div>
+
         <div class="metric-strip">
           <span><strong>${cursos.length}</strong> cursos</span>
-          <span><strong>${cursos.filter(c => c.estatus === 'En curso').length}</strong> activos</span>
-          <span><strong>${alumnosRelacionados.length}</strong> alumnos</span>
+
+          <span>
+            <strong>
+              ${cursos.filter(c => c.estatus === 'En curso').length}
+            </strong>
+            activos
+          </span>
+
+          <span>
+            <strong>${alumnosRelacionados.length}</strong>
+            alumnos
+          </span>
         </div>
+
         <div class="mini-course-list">
-          ${cursos.map(c => `
-            <button class="mini-course" onclick="verCurso('${c.id}')">
-              <span>${c.nombre}</span>
-              ${estatusBadge(c.estatus)}
-            </button>`).join('') || '<p class="muted-empty">Sin cursos asignados.</p>'}
+          ${
+            cursos.map(c => `
+              <button
+                class="mini-course"
+                onclick="verCurso('${c.id}')">
+
+                <span>${c.nombre}</span>
+
+                ${estatusBadge(c.estatus)}
+
+              </button>
+            `).join('')
+          }
         </div>
-      </article>`;
-  }).join('') || '<div class="empty-panel">No se encontraron docentes.</div>';
+
+      </article>
+    `;
+
+  }).join('')}
+
+`;
 }
 
 function renderCursos() {
@@ -259,6 +312,98 @@ function seleccionarAlumno(curp) {
   result.innerHTML = buildResultCard(alumno);
   setTimeout(() => result.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
 }
+
+function switchDocenteTab(tab) {
+
+  document.getElementById('panelDocenteCurp').style.display =
+    tab === 'curp' ? 'block' : 'none';
+
+  document.getElementById('panelDocenteNombre').style.display =
+    tab === 'nombre' ? 'block' : 'none';
+
+  document.getElementById('tabDocenteCurp')
+    .classList.toggle('active', tab === 'curp');
+
+  document.getElementById('tabDocenteNombre')
+    .classList.toggle('active', tab === 'nombre');
+}
+
+function consultarDocenteCURP() {
+
+  const curp = docenteCurpInput.value.trim().toUpperCase();
+
+  const docente = listaDocentes.find(
+    d => limpiarCurp(d.curp) === limpiarCurp(curp)
+  );
+
+  if (!docente) {
+    docenteResult.innerHTML =
+      '<div class="error-box">Docente no encontrado.</div>';
+    return;
+  }
+
+  docenteResult.innerHTML = buildResultCard(docente);
+}
+
+function onDocenteNombreInput() {
+
+  const q = docenteNombreInput.value.trim();
+
+  if (q.length < 2) {
+    docenteSugerencias.style.display = 'none';
+    return;
+  }
+
+  const terminos = normalizar(q).split(/\s+/);
+
+  const coincidencias = listaDocentes.filter(d => {
+
+    const texto = normalizar(nombreCompleto(d));
+
+    return terminos.every(t => texto.includes(t));
+  });
+
+  docenteSugerencias.style.display = 'block';
+
+  docenteSugerencias.innerHTML = coincidencias.map(d => `
+    <div class="suggestion-item"
+      onclick="seleccionarDocente('${d.curp}')">
+
+      <div class="sug-avatar">
+        ${d.foto_inicial || '?'}
+      </div>
+
+      <div class="sug-info">
+        <div class="sug-name">
+          ${nombreCompleto(d)}
+        </div>
+
+        <div class="sug-curp">
+          ${d.curp}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function seleccionarDocente(curp) {
+
+  const docente = listaDocentes.find(
+    d => d.curp === curp
+  );
+
+  if (!docente) return;
+
+  docenteNombreInput.value =
+    nombreCompleto(docente);
+
+  docenteSugerencias.style.display = 'none';
+
+  docenteResult.innerHTML =
+    buildResultCard(docente);
+}
+
+
 
 function buildResultCard(persona) {
   const cursos = cursosDePersona(persona);

@@ -79,17 +79,88 @@
     </section>
 
     <section id="sectionDocentes" style="display:none;">
-      <div class="section-header split-header">
-        <div>
-          <p class="section-eyebrow">Trabajadores academicos</p>
-          <h2 class="section-title">Docentes y cursos impartidos</h2>
-          <p class="section-sub">Despliegue del trabajo respectivo a docentes y sus cursos impartidos.</p>
+        <div class="section-header">
+            <div>
+            <p class="section-eyebrow">Trabajadores academicos</p>
+            <h2 class="section-title">Docentes y cursos impartidos</h2>
+            <p class="section-sub">
+                Busca docentes y revisa su historial academico.
+            </p>
+            </div>
         </div>
-        <div class="toolbar-search">
-          <input id="docenteFiltro" class="mini-search" type="search" placeholder="Buscar docente o curso" oninput="renderDocentes()" />
+
+        <div class="tabs">
+            <button class="tab active" id="tabDocenteCurp" onclick="switchDocenteTab('curp')">
+            Buscar por CURP
+            </button>
+
+            <button class="tab" id="tabDocenteNombre" onclick="switchDocenteTab('nombre')">
+            Buscar por Nombre
+            </button>
         </div>
-      </div>
-      <div id="docentesGrid" class="entity-grid"></div>
+
+        <div class="search-card">
+
+            <div id="panelDocenteCurp">
+            <label class="search-label" for="docenteCurpInput">
+                CURP del docente
+            </label>
+
+            <div class="input-icon-wrap">
+                <input
+                id="docenteCurpInput"
+                class="curp-input"
+                type="text"
+                maxlength="18"
+                placeholder="CURP del docente"
+                />
+
+                <button
+                class="btn-search"
+                onclick="consultarDocenteCURP()">
+                Consultar
+                </button>
+            </div>
+            </div>
+
+            <div id="panelDocenteNombre" style="display:none;">
+            <label class="search-label" for="docenteNombreInput">
+                Nombre del docente
+            </label>
+
+            <div class="input-icon-wrap" style="position:relative;">
+                <input
+                id="docenteNombreInput"
+                class="curp-input"
+                type="text"
+                placeholder="Nombre del docente"
+                autocomplete="off"
+                spellcheck="false"
+                oninput="onDocenteNombreInput()"
+                />
+
+                <div
+                id="docenteSugerencias"
+                class="suggestions-dropdown"
+                style="display:none;">
+                </div>
+            </div>
+
+            <p class="hint">
+                Escribe al menos 2 letras para ver sugerencias.
+            </p>
+            </div>
+
+            <div
+            class="state-area"
+            id="docenteStateArea"
+            style="display:none;">
+            </div>
+
+        </div>
+
+        <div id="docenteResult" style="margin-top:1.75rem;"></div>
+        <div id="docentesGrid" style="margin-top:1.75rem;" class="entity-grid"></div>
     </section>
 
     <section id="sectionCursos" style="display:none;">
