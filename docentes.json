@@ -1,66 +1,244 @@
 [
   {
-    "curp": "PAOR691209HDFZRL04",
-    "nombre": "CLAUDIA",
-    "apellido_paterno": "SHEINBAUM",
-    "apellido_materno": "PARDO",
+    "id": "001",
+    "nombre": "MARÍA FERNANDA",
+    "apellido_paterno": "CASTRO",
+    "apellido_materno": "ROMERO",
+    "curp": "CARM890314MBCSTM09",
+    "rol": "Alumno",
     "sexo": "M",
-    "fecha_nacimiento": "1962-06-24",
-    "entidad_nacimiento": "CIUDAD DE MÉXICO",
-    "municipio": "CUAUHTÉMOC",
-    "nacionalidad": "MEXICANA",
-    "estatus": "Activo",
-    "cargo": "Presidenta de México",
-    "periodo": "2024 – 2030",
-    "partido": "MORENA",
-    "foto_inicial": "CS"
+    "fecha_nacimiento": "1989-03-14",
+    "entidad_nacimiento": "BAJA CALIFORNIA SUR",
+    "municipio": "LA PAZ",
+    "telefono": "612-145-8832",
+    "correo": "fernanda.castro@icatebcs.gob.mx",
+    "foto_inicial": "FC",
+    "historial_cursos": [
+      {
+        "nombre_curso": "Ofimática Básica",
+        "fecha_inicio": "2024-01-15",
+        "fecha_fin": "2024-03-15",
+        "sede": "Plantel La Paz Norte",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Atención al Cliente",
+        "fecha_inicio": "2024-04-10",
+        "fecha_fin": "2024-06-10",
+        "sede": "Plantel La Paz Norte",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Contabilidad Básica",
+        "fecha_inicio": "2025-01-20",
+        "fecha_fin": "2025-04-20",
+        "sede": "Plantel La Paz Centro",
+        "estatus": "En curso"
+      }
+    ]
   },
   {
-    "curp": "LOOA531113HTCPBN07",
-    "nombre": "ANDRÉS MANUEL",
-    "apellido_paterno": "LÓPEZ",
-    "apellido_materno": "OBRADOR",
+    "id": "002",
+    "nombre": "JORGE LUIS",
+    "apellido_paterno": "MÉNDEZ",
+    "apellido_materno": "VIDAL",
+    "curp": "MEVJ750628HBCNDL07",
+    "rol": "Capacitador",
     "sexo": "H",
-    "fecha_nacimiento": "1953-11-13",
-    "entidad_nacimiento": "TABASCO",
-    "municipio": "MACUSPANA",
-    "nacionalidad": "MEXICANA",
-    "estatus": "Activo",
-    "cargo": "Expresidente de México",
-    "periodo": "2018 – 2024",
-    "partido": "MORENA",
-    "foto_inicial": "AM"
+    "fecha_nacimiento": "1975-06-28",
+    "entidad_nacimiento": "BAJA CALIFORNIA SUR",
+    "municipio": "LOS CABOS",
+    "telefono": "624-198-3301",
+    "correo": "jorge.mendez@icatebcs.gob.mx",
+    "foto_inicial": "JM",
+    "historial_cursos": [
+      {
+        "nombre_curso": "Soldadura MIG/TIG",
+        "fecha_inicio": "2023-08-01",
+        "fecha_fin": "2023-11-30",
+        "sede": "Plantel Los Cabos",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Seguridad Industrial",
+        "fecha_inicio": "2024-02-05",
+        "fecha_fin": "2024-04-05",
+        "sede": "Plantel Los Cabos",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Electricidad Residencial",
+        "fecha_inicio": "2024-09-10",
+        "fecha_fin": "2024-12-10",
+        "sede": "Plantel Los Cabos",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Instalaciones Industriales",
+        "fecha_inicio": "2025-02-03",
+        "fecha_fin": "2025-05-03",
+        "sede": "Plantel Los Cabos",
+        "estatus": "En curso"
+      }
+    ]
   },
   {
-    "curp": "PENM680707HMCXRS09",
-    "nombre": "ENRIQUE",
-    "apellido_paterno": "PEÑA",
-    "apellido_materno": "NIETO",
-    "sexo": "H",
-    "fecha_nacimiento": "1966-07-20",
-    "entidad_nacimiento": "ESTADO DE MÉXICO",
-    "municipio": "ATLACOMULCO",
-    "nacionalidad": "MEXICANA",
-    "estatus": "Activo",
-    "cargo": "Expresidente de México",
-    "periodo": "2012 – 2018",
-    "partido": "PRI",
-    "foto_inicial": "EP"
+    "id": "003",
+    "nombre": "ANA SOFÍA",
+    "apellido_paterno": "PEDRAZA",
+    "apellido_materno": "LUNA",
+    "curp": "PELA950902MBCDRN05",
+    "rol": "Alumno",
+    "sexo": "M",
+    "fecha_nacimiento": "1995-09-02",
+    "entidad_nacimiento": "BAJA CALIFORNIA SUR",
+    "municipio": "COMONDÚ",
+    "telefono": "613-227-5541",
+    "correo": "ana.pedraza@correo.com",
+    "foto_inicial": "AP",
+    "historial_cursos": [
+      {
+        "nombre_curso": "Primeros Auxilios",
+        "fecha_inicio": "2024-03-01",
+        "fecha_fin": "2024-04-15",
+        "sede": "Plantel Comondú",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Corte y Confección",
+        "fecha_inicio": "2024-05-06",
+        "fecha_fin": "2024-08-06",
+        "sede": "Plantel Comondú",
+        "estatus": "Baja"
+      },
+      {
+        "nombre_curso": "Cosmetología Avanzada",
+        "fecha_inicio": "2025-01-13",
+        "fecha_fin": "2025-04-13",
+        "sede": "Plantel La Paz Centro",
+        "estatus": "En curso"
+      }
+    ]
   },
   {
-    "curp": "CAHF620118HMCLRN09",
-    "nombre": "FELIPE DE JESÚS",
-    "apellido_paterno": "CALDERÓN",
-    "apellido_materno": "HINOJOSA",
+    "id": "004",
+    "nombre": "ROBERTO CARLOS",
+    "apellido_paterno": "SÁNCHEZ",
+    "apellido_materno": "FLORES",
+    "curp": "SAFR820117HBCNLB03",
+    "rol": "Capacitador",
     "sexo": "H",
-    "fecha_nacimiento": "1962-08-18",
-    "entidad_nacimiento": "MICHOACÁN",
-    "municipio": "MORELIA",
-    "nacionalidad": "MEXICANA",
-    "estatus": "Activo",
-    "cargo": "Expresidente de México",
-    "periodo": "2006 – 2012",
-    "partido": "PAN",
-    "foto_inicial": "FC"
+    "fecha_nacimiento": "1982-01-17",
+    "entidad_nacimiento": "BAJA CALIFORNIA SUR",
+    "municipio": "LA PAZ",
+    "telefono": "612-334-9920",
+    "correo": "roberto.sanchez@icatebcs.gob.mx",
+    "foto_inicial": "RS",
+    "historial_cursos": [
+      {
+        "nombre_curso": "Gastronomía Regional",
+        "fecha_inicio": "2023-06-12",
+        "fecha_fin": "2023-09-12",
+        "sede": "Plantel La Paz Sur",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Panadería y Repostería",
+        "fecha_inicio": "2024-01-08",
+        "fecha_fin": "2024-04-08",
+        "sede": "Plantel La Paz Sur",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Manipulación de Alimentos",
+        "fecha_inicio": "2024-07-15",
+        "fecha_fin": "2024-09-15",
+        "sede": "Plantel La Paz Norte",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Cocina Internacional",
+        "fecha_inicio": "2025-03-03",
+        "fecha_fin": "2025-06-03",
+        "sede": "Plantel La Paz Sur",
+        "estatus": "En curso"
+      }
+    ]
+  },
+  {
+    "id": "005",
+    "nombre": "CLAUDIA BEATRIZ",
+    "apellido_paterno": "MORENO",
+    "apellido_materno": "IBARRA",
+    "curp": "MOIC910711MBCRNL02",
+    "rol": "Alumno",
+    "sexo": "M",
+    "fecha_nacimiento": "1991-07-11",
+    "entidad_nacimiento": "BAJA CALIFORNIA SUR",
+    "municipio": "LOS CABOS",
+    "telefono": "624-501-7743",
+    "correo": "claudia.moreno@correo.com",
+    "foto_inicial": "CM",
+    "historial_cursos": [
+      {
+        "nombre_curso": "Inglés Básico",
+        "fecha_inicio": "2024-02-19",
+        "fecha_fin": "2024-05-19",
+        "sede": "Plantel Los Cabos",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Inglés Intermedio",
+        "fecha_inicio": "2024-06-03",
+        "fecha_fin": "2024-09-03",
+        "sede": "Plantel Los Cabos",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Turismo y Hospitalidad",
+        "fecha_inicio": "2025-01-27",
+        "fecha_fin": "2025-04-27",
+        "sede": "Plantel Los Cabos",
+        "estatus": "En curso"
+      }
+    ]
+  },
+  {
+    "id": "006",
+    "nombre": "MIGUEL ÁNGEL",
+    "apellido_paterno": "RÍOS",
+    "apellido_materno": "CORTEZ",
+    "curp": "RICM840923HBCSGN04",
+    "rol": "Capacitador",
+    "sexo": "H",
+    "fecha_nacimiento": "1984-09-23",
+    "entidad_nacimiento": "BAJA CALIFORNIA SUR",
+    "municipio": "LA PAZ",
+    "telefono": "612-778-4456",
+    "correo": "miguel.rios@icatebcs.gob.mx",
+    "foto_inicial": "MR",
+    "historial_cursos": [
+      {
+        "nombre_curso": "Programación Web",
+        "fecha_inicio": "2023-09-04",
+        "fecha_fin": "2023-12-04",
+        "sede": "Plantel La Paz Centro",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Diseño Gráfico Digital",
+        "fecha_inicio": "2024-01-22",
+        "fecha_fin": "2024-04-22",
+        "sede": "Plantel La Paz Centro",
+        "estatus": "Aprobado"
+      },
+      {
+        "nombre_curso": "Ciberseguridad Básica",
+        "fecha_inicio": "2025-02-10",
+        "fecha_fin": "2025-05-10",
+        "sede": "Plantel La Paz Centro",
+        "estatus": "En curso"
+      }
+    ]
   }
 ]

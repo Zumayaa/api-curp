@@ -1,0 +1,40 @@
+[
+  {
+    "id": "A1",
+    "nombre": "MARÍA FERNANDA",
+    "apellido_paterno": "CASTRO",
+    "apellido_materno": "ROMERO",
+    "curp": "CARM890314MBCSTM09",
+    "rol": "Alumno",
+    "sexo": "M",
+    "fecha_nacimiento": "1989-03-14",
+    "entidad_nacimiento": "BAJA CALIFORNIA SUR",
+    "municipio": "LA PAZ",
+    "telefono": "612-145-8832",
+    "correo": "fernanda.castro@icatebcs.gob.mx",
+    "foto_inicial": "FC",
+    "cursos_inscritos": [
+      { "id_curso": "C1", "estatus": "Aprobado" },
+      { "id_curso": "C2", "estatus": "En curso" }
+    ]
+  },
+  {
+    "id": "A2",
+    "nombre": "ANA SOFÍA",
+    "apellido_paterno": "PEDRAZA",
+    "apellido_materno": "LUNA",
+    "curp": "PELA950902MBCDRN05",
+    "rol": "Alumno",
+    "sexo": "M",
+    "fecha_nacimiento": "1995-09-02",
+    "entidad_nacimiento": "BAJA CALIFORNIA SUR",
+    "municipio": "COMONDÚ",
+    "telefono": "613-227-5541",
+    "correo": "ana.pedraza@correo.com",
+    "foto_inicial": "AP",
+    "cursos_inscritos": [
+      { "id_curso": "C3", "estatus": "Aprobado" },
+      { "id_curso": "C4", "estatus": "Baja" }
+    ]
+  }
+]
