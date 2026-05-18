@@ -180,7 +180,10 @@ function renderCursos() {
           <h3>${c.nombre}</h3>
           <p>${c.sede} · ${formatFecha(c.fecha_inicio)} - ${formatFecha(c.fecha_fin)}</p>
         </div>
-        ${estatusBadge(c.estatus)}
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: .6rem;">
+          ${estatusBadge(c.estatus)}
+          <button class="btn-mas-info" onclick="abrirInfoCurso('${c.id}')">Más información</button>
+        </div>
       </div>
       <div class="course-relationship">
         <div class="relationship-block">
@@ -682,6 +685,38 @@ function iconLink() {
 function cerrarSesion() {
     localStorage.removeItem('icatebcs_auth');
     window.location.replace('login.html');
+}
+
+function abrirInfoCurso(id) {
+  const curso = listaCursos.find(c => c.id === id);
+  if (!curso) return;
+
+  const descripcion = curso.descripcion || `El programa de capacitación en ${curso.nombre} está diseñado para dotar a los trabajadores de las herramientas prácticas y teóricas necesarias para mejorar su desempeño laboral, fomentando la competitividad y el desarrollo profesional en Baja California Sur.`;
+  const numClases = curso.numero_clases || (Math.floor(Math.random() * 8) + 12); // Simula entre 12 y 20 clases
+  const horasTotales = curso.horas_totales || (numClases * 2.5); // Simula 2.5 horas por clase
+  const modalidad = curso.modalidad || (Math.random() > 0.5 ? 'Presencial' : 'Híbrida');
+
+  document.getElementById('modalCursoTitle').innerText = curso.nombre;
+  
+  document.getElementById('modalCursoBody').innerHTML = `
+    <div style="margin-bottom: 1.5rem;">
+      <span class="section-eyebrow">Descripción del programa</span>
+      <p class="curso-desc-text">${descripcion}</p>
+    </div>
+    
+    <div class="data-grid" style="grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); border-left: 1px solid var(--border);">
+      ${dataItem('Clases Totales', `<strong>${numClases} sesiones</strong>`)}
+      ${dataItem('Horas de Capacitación', `<strong>${horasTotales} hrs</strong>`)}
+      ${dataItem('Modalidad', modalidad)}
+      ${dataItem('Sede de Impartición', curso.sede)}
+    </div>
+  `;
+  
+  document.getElementById('modalCurso').style.display = 'flex';
+}
+
+function cerrarModalCurso() {
+  document.getElementById('modalCurso').style.display = 'none';
 }
 
 inicializar();

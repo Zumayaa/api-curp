@@ -960,3 +960,41 @@ button.person-pill:hover {
   .metric-strip { grid-template-columns: 1fr; }
   .course-card-head { display: block; }
 }
+
+/* ══════════════════════════════
+   BOTÓN MÁS INFO Y MODAL CURSOS
+══════════════════════════════ */
+.btn-mas-info {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: .35rem .85rem;
+  background: transparent; color: var(--guinda);
+  border: 1px solid rgba(107,18,48,.25); border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700;
+  cursor: pointer; transition: all .2s;
+  white-space: nowrap;
+}
+.btn-mas-info:hover {
+  background: rgba(107,18,48,.04);
+  border-color: var(--guinda);
+}
+
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn .2s ease;
+}
+.modal-content {
+  background: #fff; width: 90%; max-width: 550px;
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp .3s ease;
+}
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.25rem 1.5rem; background: rgba(107,18,48,.03);
+  border-bottom: 1px solid var(--border);
+}
+.curso-desc-text {
+  margin-top: .4rem; line-height: 1.6; color: #555;
+}
